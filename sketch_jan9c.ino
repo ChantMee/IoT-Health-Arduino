@@ -19,7 +19,7 @@ Light lgt(LIGHT_PIN, 1);
 Button cel_btn(BUTTON_CANCEL_PIN);
 Button act_btn(BUTTON_ACTIVATE_PIN);
 
-int CUR_LOOP;
+unsigned int CUR_LOOP;
 
 void setup() {
   Serial.begin(PORT);
@@ -49,7 +49,10 @@ void loop() {
 
   if (++CUR_LOOP == LOOP_INTERVAL) {
     CUR_LOOP = 0;
-    String res = String(sds.get()) + String(dht.get());
+    String res = "{ ";
+    res += sds.get();
+    res += dht.get();
+    res += " }";
     Serial.println(res);
   }
 }

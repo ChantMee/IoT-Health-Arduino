@@ -13,6 +13,7 @@ class DHTSensor {
     void begin();
     void update();
     String get();
+    int size();
   private:
     DHT dht;
     LinkedList<float> humi, temp, _humi, _temp;

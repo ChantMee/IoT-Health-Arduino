@@ -25,19 +25,19 @@ void DHTSensor::update() {
 }
 
 String DHTSensor::get() {
-  String humi_arr = "[", temp_arr = "[";
+  float humi_avg = 0.0, temp_avg = 0.0;
   int n = _humi.size();
   for (int i = 0; i < n; i++) {
-    humi_arr += String(_humi[i]);
-    temp_arr += String(_temp[i]);
-    if (i != n - 1) {
-      humi_arr += ", ";
-      temp_arr += ", ";
-    }
+    humi_avg += _humi[i];
+    temp_avg += _temp[i];
   }
-  humi_arr += "]";
-  temp_arr += "]";
   _humi.clear();
   _temp.clear();
-  return "humidity: " + humi_arr + ", temperature: " + temp_arr + ",";
+  humi_avg /= n;
+  temp_avg /= n;
+  return "\"humidity\": " + String(humi_avg) + ", \"temperature\": " + String(temp_avg) + ",";
+}
+
+int DHTSensor::size() {
+  return humi.size() + _humi.size();
 }

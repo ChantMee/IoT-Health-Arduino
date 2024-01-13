@@ -16,9 +16,8 @@ void SoundSensor::update() {
 }
 
 String SoundSensor::get() {
-  String res = "[";
+  int bre_cnt = 0;
   if (breath.size() >= window_size) {
-    res += String(timestamp[0]);
     int num[2] = {0, 0};
     int n = breath.size();
     for (int i = 0; i < window_size; i++) {
@@ -31,14 +30,13 @@ String SoundSensor::get() {
       int state = num[1] > num[0];
       if (state != last_state) {
         last_state = state;
-        res += ", " + String(timestamp[(i + j) / 2]);
+        bre_cnt ++;
       }
     }
     breath.clear();
     timestamp.clear();
   }
-  res += "]";
-  return "breathing: " + res + ",";
+  return "\"breathing\": " + String(bre_cnt / 2) + ",";
 }
 
 int SoundSensor::size() {
