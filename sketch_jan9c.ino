@@ -1,9 +1,13 @@
+#include "LinkedList.h"
+
 #include "DHTSensor.h"
 #include "SoundSensor.h"
 #include "Light.h"
 #include "Button.h"
 
-#define LOOP_INTERVAL 250
+#define DEVICE_CODE "b5ab92178e4b404b9f83a98abe2d7ce3"
+
+#define LOOP_INTERVAL 1200
 #define PORT 115200
 
 #define DHT11_PIN 2
@@ -14,7 +18,7 @@
 
 
 DHTSensor dht(DHT11_PIN, DHT11);
-SoundSensor sds(SOUND_SENSOR_PIN, 10);
+SoundSensor sds(SOUND_SENSOR_PIN, 30);
 Light lgt(LIGHT_PIN, 1);
 Button cel_btn(BUTTON_CANCEL_PIN);
 Button act_btn(BUTTON_ACTIVATE_PIN);
@@ -33,6 +37,15 @@ void setup() {
   act_btn.begin();
 }
 
+String get_json(LinkedList<String> data_list) {
+  String res = "{";
+  int n = data_list.size();
+  for (int i = 0; i < n; i++) {
+    res += data_list[i] + " }"[i == n - 1];
+  }
+  return res;
+}
+
 void loop() {
   delay(10);
   dht.update();
@@ -47,8 +60,13 @@ void loop() {
     lgt.open();
   }
 
+  if (CUR_LOOP % 100 == 0) {
+    Serial.println(CUR_LOOP);
+  }
+
   if (++CUR_LOOP == LOOP_INTERVAL) {
     CUR_LOOP = 0;
+    
     String res = "{ ";
     res += sds.get();
     res += dht.get();

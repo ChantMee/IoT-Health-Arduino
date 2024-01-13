@@ -13,9 +13,11 @@ class SoundSensor {
     int size();
   private:
     LinkedList<short> breath;
-    LinkedList<unsigned int> timestamp;
+    // LinkedList<unsigned int> timestamp;
     unsigned int window_size;
     uint8_t pin;
+    int last_state;
+    int bre_cnt;
 };
 
 # endif

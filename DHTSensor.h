@@ -16,7 +16,8 @@ class DHTSensor {
     int size();
   private:
     DHT dht;
-    LinkedList<float> humi, temp, _humi, _temp;
+    float sum_humi, sum_temp;
+    int cnt;
 };
 
 # endif
