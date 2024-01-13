@@ -1,4 +1,5 @@
 #include "LinkedList.h"
+#include <SoftwareSerial.h>
 
 #include "DHTSensor.h"
 #include "SoundSensor.h"
@@ -7,7 +8,7 @@
 
 #define DEVICE_CODE "b5ab92178e4b404b9f83a98abe2d7ce3"
 
-#define LOOP_INTERVAL 1200
+#define LOOP_INTERVAL 1500
 #define PORT 115200
 
 #define DHT11_PIN 2
@@ -37,13 +38,19 @@ void setup() {
   act_btn.begin();
 }
 
-String get_json(LinkedList<String> data_list) {
+String get_json(LinkedList<String> &data_list) {
   String res = "{";
   int n = data_list.size();
   for (int i = 0; i < n; i++) {
     res += data_list[i] + " }"[i == n - 1];
   }
   return res;
+}
+
+String get_device_id() {
+  String code = DEVICE_CODE;
+  code = "\"deviceCode\": \"" + code + "\",";
+  return code;
 }
 
 void loop() {
@@ -66,11 +73,13 @@ void loop() {
 
   if (++CUR_LOOP == LOOP_INTERVAL) {
     CUR_LOOP = 0;
-    
-    String res = "{ ";
-    res += sds.get();
-    res += dht.get();
-    res += " }";
+    LinkedList<String> ls;
+    ls.add(sds.get());
+    ls.add(dht.get());
+    ls.add(get_device_id());
+    ls.add(lgt.get_state_json("alert"));
+    String res = get_json(ls);
+    ls.clear();
     Serial.println(res);
   }
 }

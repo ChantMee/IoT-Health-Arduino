@@ -10,8 +10,9 @@ class Light {
     void set(int state);
     void open();
     void close();
-    void get_current_state();
+    int get_current_state();
     void opposite();
+    String get_state_json(String key);
 
   private:
     void update_state();

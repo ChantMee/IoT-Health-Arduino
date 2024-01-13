@@ -25,7 +25,7 @@ void Light::close() {
   update_state();
 }
 
-void Light::get_current_state() {
+int Light::get_current_state() {
   return cur_state;
 }
 
@@ -36,4 +36,9 @@ void Light::opposite() {
 
 void Light::update_state() {
   digitalWrite(pin, cur_state);
+}
+
+String Light::get_state_json(String key) {
+  String json = "\"" + key + "\": " + String(get_current_state()) + ",";
+  return json;
 }
