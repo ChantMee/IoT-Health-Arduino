@@ -1,5 +1,5 @@
 #include "LinkedList.h"
-#include <SoftwareSerial.h>
+// #include <SoftwareSerial.h>
 
 #include "DHTSensor.h"
 #include "SoundSensor.h"
@@ -8,7 +8,7 @@
 
 #define DEVICE_CODE "b5ab92178e4b404b9f83a98abe2d7ce3"
 
-#define LOOP_INTERVAL 1500
+#define LOOP_INTERVAL 300
 #define PORT 115200
 
 #define DHT11_PIN 2
@@ -16,6 +16,8 @@
 #define LIGHT_PIN 4
 #define BUTTON_CANCEL_PIN 5
 #define BUTTON_ACTIVATE_PIN 6
+#define RX 7
+#define TX 9
 
 
 DHTSensor dht(DHT11_PIN, DHT11);
@@ -24,11 +26,18 @@ Light lgt(LIGHT_PIN, 1);
 Button cel_btn(BUTTON_CANCEL_PIN);
 Button act_btn(BUTTON_ACTIVATE_PIN);
 
+// SoftwareSerial wifi_serial = SoftwareSerial(TX, RX);
+
 unsigned int CUR_LOOP;
 
 void setup() {
   Serial.begin(PORT);
   while (!Serial) delay(10);
+  Serial2.begin(9600);
+  while (!Serial2) delay(10);
+  // wifi_serial.begin(9600);
+  // wifi_serial.flush();
+
   CUR_LOOP = 0;
 
   dht.begin();
@@ -80,6 +89,22 @@ void loop() {
     ls.add(lgt.get_state_json("alert"));
     String res = get_json(ls);
     ls.clear();
-    Serial.println(res);
+    // Serial.println(res);
+    Serial2.println(res);
   }
+
+  if (Serial2.available()) {
+    String message = Serial2.readString();
+    Serial.print("received: [" + message + "]");
+    if (message == "0") {
+      lgt.close();
+    } else {
+      lgt.open();
+    }
+  }
+  // wifi_serial.println("Hello from Arduino");
+  // // Serial.println("running");
+  // Serial.println(wifi_serial.available());
+
+  // delay(2000);
 }
